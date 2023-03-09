@@ -375,7 +375,6 @@ Success
 - Method: DELETE
 - Header:
     - Authorization: Bearer {token}
-```
 - Response
 
 Success
@@ -386,6 +385,7 @@ Success
 }
 
 ```
+
 ---
 
 ...
