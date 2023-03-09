@@ -291,6 +291,7 @@ Success
 - Responses
 
 Success
+```
 {
   "type": "success",
   "message": "Comment created successfully!",
@@ -303,7 +304,10 @@ Success
     "createdAt": "2023-03-09T10:58:25.013Z"
   }
 }
+
 ```
+
+
 ---
 ### Get Comment by Id
 
@@ -372,7 +376,8 @@ Success
 - Header:
     - Authorization: Bearer {token}
 ```
-- Responses
+- Response
+
 Success
 ```
 {
