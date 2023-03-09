@@ -25,7 +25,7 @@ This is an api for an article website
 
 
 ## Models
----
+
 
 ### User
 | field  |  data_type | constraints  |
