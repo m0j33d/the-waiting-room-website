@@ -1,5 +1,6 @@
 const ArticleModel = require("../model").articles;
-const UserModel = require("../model").users;
+const { getAllCommentsForArticle } = require("../services/comment.service")
+
 
 const createArticle = async (req, res) => {
   const data = req.body;
@@ -21,17 +22,30 @@ const createArticle = async (req, res) => {
 };
 
 const getAllArticles = async (req, res) => {
-  const { pageSize, page, order_by } = req.query;
-  pageSize ?? 20;
-  page ?? 0;
+  try {
+    let { pageSize, page, order_by } = req.query;
 
-  const articles = await ArticleModel.findAll({});
+    const limit = parseInt(pageSize) || 15;
+    const offset = parseInt(page * pageSize) || 0;
+    order_by = order_by || "createdAt";
 
-  return res.status(200).json({
-    type: "success",
-    message: "Request successful",
-    articles: articles,
-  });
+    const articles = await ArticleModel.findAll({
+      limit: limit,
+      offset: offset,
+      order: [[order_by, "DESC"]],
+    });
+
+    return res.status(200).json({
+      type: "success",
+      message: "Request successful",
+      articles: articles,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      type: "error",
+      message: error.message,
+    });
+  }
 };
 
 const getArticleById = async (req, res) => {
@@ -49,6 +63,7 @@ const getArticleById = async (req, res) => {
       type: "success",
       message: "Request successful",
       article: article,
+      comments: await getAllCommentsForArticle(articleID)
     });
   } catch (error) {
     return res.status(400).json({

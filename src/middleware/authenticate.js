@@ -1,7 +1,6 @@
 var passport = require("passport");
 
 const UserModel = require("../model").users;
-const ArticleModel = require("../model").articles;
 
 var JwtStrategy = require("passport-jwt").Strategy;
 var ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -31,23 +30,3 @@ exports.jwtPassport = passport.use(
 
 exports.verifyUser = passport.authenticate("jwt", { session: false });
 
-exports.isCreator = async (req, res, next) => {
-  try {
-    const article = await ArticleModel.findByPk(req.params.id);
-    
-    if(!article){
-      return res.status(422).json({
-        type: "error",
-        message: "Article does not exist",
-      });
-    }
-    
-    if (article.owner_id == req.user.id) {
-      next();
-    }else{
-      return res.status(403).json({ type: "error", message: "You are not the creator of this article" });
-    }
-  } catch (error) {
-    return res.status(400).json({ type: "error", message: error.message });
-  }
-};

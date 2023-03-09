@@ -19,6 +19,7 @@ db.Sequelize = Sequelize
 
 db.users = require('./users.model')(sequelize, DataTypes)
 db.articles = require('./articles.model')(sequelize, DataTypes)
+db.comments = require('./comments.model')(sequelize, DataTypes)
 
 db.sequelize.sync({ force: false })
     .then(() => console.log('Table sync successfully.'))

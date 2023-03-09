@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate')
+const authorize = require('../middleware/authorize')
+
 const {
   createArticle,
   getAllArticles,
@@ -19,8 +21,8 @@ router
 router 
   .route('/:id')
   .get(getArticleById)
-  .put(authenticate.verifyUser, authenticate.isCreator, editArticleById)
-  .delete(authenticate.verifyUser, authenticate.isCreator, deleteArticleById)
+  .put(authenticate.verifyUser, authorize.isArticleCreator, editArticleById)
+  .delete(authenticate.verifyUser, authorize.isArticleCreator, deleteArticleById)
   
 
 module.exports = router;
