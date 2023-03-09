@@ -30,25 +30,30 @@ This is an api for an article website
 ### User
 | field  |  data_type | constraints  |
 |---|---|---|
-|  id |  string |  required |
+|  id |  integer |  required |
 |  first_name | string  |  required|
 |  last_name  |  string |  required  |
 |  email     | string  |  required |
 |  password |   string |  required  |
-|  phone_number |  string |  optional |
 
 
 ### Article
 | field  |  data_type | constraints  |
 |---|---|---|
-|  id |  string |  required |
-|  created_at |  date |  required |
-|  state | string  |  required, default:draft, enum: ['draft', 'published'] |
-|  title  |  string |  required, unique  |
-|  description |   string |  required  |
-|  author |  number |  required |
-|  body |  string |  required |
+|  id |  integer |  required |
+|  title  |  string |  required |
+|  summary |   string |  required  |
+|  owner_id |  integer |  required |
+|  article_body |  string |  required |
 
+
+### Comment
+| field  |  data_type | constraints  |
+|---|---|---|
+|  id |  integer |  required |
+|  user_id  |  integer |  required |
+|  comment |   string |  required  |
+|  article_id |  integer |  required |
 
 
 ## APIs
@@ -74,7 +79,7 @@ Success
 ```
 {
   "type": success
-  "message": "Registration successful!",
+  "message": "Registration successful",
 }
 ```
 ---
@@ -86,7 +91,7 @@ Success
 ```
 {
   "password": "Password1",
-  "email": 'doe@example.com",
+  "email": "doe@example.com",
 }
 ```
 
@@ -96,25 +101,26 @@ Success
 ```
 {
   "type": success
-  "message": You are successfully logged in,
+  "message": "Login successful",
   "token": "nnfnfjfjkfdjkdfkdj",
 }
 ```
 
 ---
-### Create Blog
+### Create Article
 
-- Route: /blog
+- Route: /article
 - Method: POST
 - Header
     - Authorization: Bearer {token}
 - Body: 
 ```
 {
-  "title": "Tent",
-  "description": "Story of Tent",
-  "tags": ["Mytag1", "Mytag2"],
-  "body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  "title": "My Article title",
+  "summary": "This is a quick summary of what my article is about.",
+  "article_body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  "updatedAt": "2023-03-09T10:58:25.013Z",
+  "createdAt": "2023-03-09T10:58:25.013Z"
 }
 ```
 
@@ -123,24 +129,23 @@ Success
 Success
 ```
 {
-  "msg": "Blog created successfully!",
-  "data": {
-    "title": "Tent",
-    "description": "Story of Tent",
-    "author": "6363e35ac448afb0a73c320d",
-    "state": "draft",
-    "read_count": 0,
-    "tags": ["Mytag1", "Mytag2"],
-    "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-    "createdAt": "2022-11-03T15:59:01.387Z",
-    "reading_time": 1 min
+  type: "success",
+  message: "Article created successfully!",
+  "article": {
+    "id": 1,
+    "title": "My Article title",
+    "summary": "This is a quick summary of what my article is about.",
+    "article_body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "owner_id": 1,
+    "updatedAt": "2023-03-09T10:58:25.013Z",
+    "createdAt": "2023-03-09T10:58:25.013Z"
   }
 }
 ```
 ---
-### Get Blog by Id
+### Get Article by Id
 
-- Route: /blog/:id
+- Route: /article/:id
 - Method: GET
 - Header
     - Authorization: Bearer {token}
@@ -149,138 +154,236 @@ Success
 Success
 ```
 {
-  "status": true,
-  "data": {
-    "_id": "6363e5451a82fea6773422bf",
-    "title": "Tent",
-    "description": "Story of Tent",
-    "author": "6363e35ac448afb0a73c320d",
-    "state": "draft",
-    "read_count": 2,
-    "tags": ["Mytag1", "Mytag2"],
-    "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-    "createdAt": "2022-11-03T15:59:01.387Z",
+  "type": "success",
+  "message": "Request successful",
+  "article": {
+    "id": 1,
+    "title": "My Article title",
+    "summary": "This is a quick summary of what my article is about.",
+    "article_body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "owner_id": 1,
+    "updatedAt": "2023-03-09T10:58:25.013Z",
+    "createdAt": "2023-03-09T10:58:25.013Z"
   },
-  "author": {
-    "first_name": "MJ",
-    "last_name": "AD",
-    "email": "mj@mj.com",
-    "phone_number": "",
+  "comments": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "article_id": 1,
+      "comment": "This is my comment on this article",
+      "updatedAt": "2023-03-09T10:58:25.013Z",
+      "createdAt": "2023-03-09T10:58:25.013Z"
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "article_id": 1,
+      "comment": "This is my second comment on this article",
+      "updatedAt": "2023-03-09T10:58:25.013Z",
+      "createdAt": "2023-03-09T10:58:25.013Z"
+    }
+  ]
+}
+```
+---
+
+### Get All Articles
+
+- Route: /article
+- Method: GET
+- Header:
+    - Authorization: Bearer {token}
+- Query params: 
+    - page (default: 0)
+    - per_page (default: 15)
+    - order_by (default: created_at)
+- Responses
+
+Success
+```
+{
+  "type": "success",
+  "message": "Request successful",
+  "articles": [
+    {
+    "id": 1,
+    "title": "My Article title",
+    "summary": "This is a quick summary of what my article is about.",
+    "article_body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "owner_id": 1,
+    "updatedAt": "2023-03-09T10:58:25.013Z",
+    "createdAt": "2023-03-09T10:58:25.013Z"
   }
-}
-```
----
-
-### Get All blogs
-
-- Route: /blog
-- Method: GET
-- Header:
-    - Authorization: Bearer {token}
-- Query params: 
-    - page (default: 1)
-    - per_page (default: 10)
-    - order_by (default: created_at)
-    - order (options: asc | desc, default: desc)
-    - state
-    - created_at
-- Responses
-
-Success
-```
-{
-  "status": true,
-  "data": [
-    {
-      "_id": "6363e5451a82fea6773422bf",
-      "title": "Tent",
-      "description": "Story of Ten",
-      "author": "6363e35ac448afb0a73c320d",
-      "state": "published",
-      "read_count": 2,
-      "tags": ["tent"],
-      "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      "createdAt": "2022-11-03T15:59:01.387Z",
-      "updatedAt": "2022-11-03T16:16:37.821Z",
-    }
   ]
 }
 ```
 ---
 
-### Get all blogs by a user
 
-- Route: /blog/allBlogs
-- Method: GET
-- Header:
-    - Authorization: Bearer {token}
-- Query params: 
-    - page (default: 1)
-    - per_page (default: 10)
-    - order_by (default: created_at)
-    - order (options: asc | desc, default: desc)
-    - state
-    - created_at
-- Responses
+### Edit Article
 
-Success
-```
-{
-  "status": true,
-  "data": [
-    {
-      "_id": "6363e5451a82fea6773422bf",
-      "title": "Tent",
-      "description": "Story of Ten",
-      "author": "6363e35ac448afb0a73c320d",
-      "state": "published",
-      "read_count": 2,
-      "tags": ["tent"],
-      "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      "createdAt": "2022-11-03T15:59:01.387Z",
-      "updatedAt": "2022-11-03T16:16:37.821Z",
-    }
-  ]
-}
-```
----
-
-### Edit blog
-
-- Route: /blog/:id
+- Route: /article/:id
 - Method: PUT
 - Header:
     - Authorization: Bearer {token}
 - Body: 
 ```
 {
-  "title": "Tent v2",
-  "description": "Story of Tent v2",
+  "title": "My new title",
+  "summary": "I just editted my summary",
 }
 ```
 - Responses
 
 Success
 ```
-  {
-  "msg": "Blog Updated Successfully",
-  "data": {
-    "read_count": 0,
-    "_id": "635eeb7908facaf61af9a5fd",
-    "title": "Tent v2",
-    "description": ""Story of Tent v2",
-    "author": "635d1d946e0fd51acc2f1d77",
-    "read_count": 2,
-    "tags": ["tent"],
-    "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-    "createdAt": "2022-11-03T15:59:01.387Z",
-    "updatedAt": "2022-11-03T16:16:37.821Z",
+{
+  "type": "success",
+  "message": "Article updated successfully",
+  "article": {
+    "id": 1,
+    "title": "My new title",
+    "summary": "I just editted my summary",
+    "article_body" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "owner_id": 1,
+    "updatedAt": "2023-03-09T10:58:25.013Z",
+    "createdAt": "2023-03-09T10:58:25.013Z"
   }
+}
+
+```
+---
+
+
+### Delete Article
+
+- Route: /article/:id
+- Method: DELETE
+- Header:
+    - Authorization: Bearer {token}
+- Responses
+
+Success
+```
+{
+  "type": "success",
+  "message": "Article deleted successfully",
+}
+
+```
+---
+
+---
+### Create Comment
+
+- Route: /comment
+- Method: POST
+- Header
+    - Authorization: Bearer {token}
+- Body: 
+```
+{
+  "article_id" : 4,
+  "comment" : "This is a very long boring article for article 4"
+}
+```
+
+- Responses
+
+Success
+{
+  "type": "success",
+  "message": "Comment created successfully!",
+  "coment": {
+    "id": 1,
+    "article_id": 4,
+    "comment": "This is a very long boring article for article 4",
+    "user_id": 6,
+    "updatedAt": "2023-03-09T10:58:25.013Z",
+    "createdAt": "2023-03-09T10:58:25.013Z"
+  }
+}
+```
+---
+### Get Comment by Id
+
+- Route: /comment/:id
+- Method: GET
+- Header
+    - Authorization: Bearer {token}
+- Responses
+
+Success
+```
+{
+  "type": "success",
+  "message": "Request successful",
+  "comment": {
+    "id": 2,
+    "user_id": 1,
+    "comment": "This is a very long boring article for article 4",
+    "article_id": 4,
+    "createdAt": "2023-03-09T10:57:54.000Z",
+    "updatedAt": "2023-03-09T10:57:54.000Z"
+  }
+
+}
+```
+---
+
+
+### Edit Comment
+
+- Route: /article/:id
+- Method: PUT
+- Header:
+    - Authorization: Bearer {token}
+- Body: 
+```
+{
+  "comment" : "This is the new comment"
+}
+```
+- Responses
+
+Success
+```
+{
+  "type": "success",
+  "message": "Comment updated successfully",
+  "coment": {
+    "id": 2,
+    "user_id": 6,
+    "comment": "This is the new editted comment",
+    "article_id": 4,
+    "createdAt": "2023-03-09T10:57:54.000Z",
+    "updatedAt": "2023-03-09T11:05:56.362Z"
+  }
+}
+
+```
+---
+
+
+### Delete Comment
+
+- Route: /article/:id
+- Method: DELETE
+- Header:
+    - Authorization: Bearer {token}
+- Responses
+
+Success
+```
+{
+  "type": "success",
+  "message": "Comment deleted successfully",
+}
 
 ```
 ---
 
 ...
 
-## Contributor
+## Owner
 - Mojeed Adeoye
