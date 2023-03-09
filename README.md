@@ -333,9 +333,9 @@ Success
 
 }
 ```
+
+
 ---
-
-
 ### Edit Comment
 
 - Route: /article/:id
@@ -348,7 +348,7 @@ Success
   "comment" : "This is the new comment"
 }
 ```
-- Responses
+- Response
 
 Success
 ```
@@ -366,9 +366,9 @@ Success
 }
 
 ```
+
+
 ---
-
-
 ### Delete Comment
 
 - Route: /article/:id
