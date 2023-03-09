@@ -62,14 +62,16 @@ const editArticleById = async (req, res) => {
   const id = req.params.id;
   const update = req.body;
   try {
-    const article = await ArticleModel.findByIdAndUpdate(id, update, {
-      new: true,
-    });
-    return res.status(200).json({
-      type: "success",
-      message: "Article updated successfully",
-      article: article,
-    });
+    const article = await ArticleModel.update(id);
+
+    if (article) {
+      article.update(update);
+      return res.status(200).json({
+        type: "success",
+        message: "Article updated successfully",
+        article: article,
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       type: "error",
@@ -81,14 +83,14 @@ const editArticleById = async (req, res) => {
 const deleteArticleById = async (req, res) => {
   try {
     const id = req.params.id;
-    const article = await ArticleModel.findByIdAndDelete(id);
-    if (!article) {
-      return res.status(404).json({
-        type: "error",
-        message: "Article does not exist",
-      });
-    }
-    blog.delete();
+
+    await ArticleModel.destroy({
+      where: {
+        id: id,
+      },
+      force: true,
+    });
+
     return res.status(204).json({
       type: "success",
       message: "Article deleted successfully",
