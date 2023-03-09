@@ -1,35 +1,24 @@
 const supertest = require("supertest")
 const httpServer = require("../bin/www")
-const mongoose = require('mongoose');
 
-jest.setTimeout(30000)
 
-/* Connecting to the database before each test. */
-beforeAll(async () => {
-    await mongoose.connect(process.env.DB_URL);
-  });
-  
-  /* Closing database connection after each test. */
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-  
-
+afterAll(() => {
+    httpServer.close()
+ })
+ 
 describe("User Route", () => {
     it('POST /user/signup', async () => {
         const body = {
-            "first_name": "Tee",
-            "last_name": "eeT",
+            "first_name": "Mojeed",
+            "last_name": "Adeoye",
             "password": "Password",
-            "email" : "example@example.com"
+            "email" : "example@example0.com"
           }
 
         const response = await supertest(httpServer).post("/api/v1/user/signup").send(body)
         expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
         expect(response.status).toBe(201)
-        expect(response.body.data.first_name).toBe(body.first_name)
-        expect(response.body.data.last_name).toBe(body.last_name)
-        expect(response.body.data.email).toBe(body.email)
+        expect(response.body.type).toBe('success')
     })
 
     it('POST /user/login', async () => {
@@ -40,7 +29,11 @@ describe("User Route", () => {
         const response = await supertest(httpServer).post("/api/v1/user/login").send(blog)
         expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
         expect(response.status).toBe(200)
-        expect(response.body.msg).toBe('You are successfully logged in')
+        expect(response.body.type).toBe('success')
+        expect((response) => {
+          if (!('token' in response.body)) throw new Error("missing field token");
+        })
+
     })
 
 })

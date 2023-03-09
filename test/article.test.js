@@ -1,94 +1,105 @@
-const supertest = require("supertest")
-const httpServer = require("../bin/www")
-const mongoose = require('mongoose');
-let token = ""
-let id = ""
-jest.setTimeout(30000)
+const supertest = require("supertest");
+const httpServer = require("../bin/www");
 
-/* Connecting to the database before each test. */
-beforeAll(async () => {
-    await mongoose.connect(process.env.DB_URL);
+let token;
+let id;
 
+beforeAll((done) => {
+  supertest(httpServer)
+    .post("/api/v1/user/login")
+    .send({
+      password: "Password",
+      email: "example@example.com",
+    })
+    .end((err, response) => {
+      token = response.body.token;
+      done();
+    });
+});
+
+afterAll(() => {
+    httpServer.close()
+ })
+
+describe("Article Route", () => {
+  it("GET /article", async () => {
+    const response = await supertest(httpServer).get("/api/v1/article");
+    expect(response.headers["content-type"]).toBe(
+      "application/json; charset=utf-8"
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("CREATE /article", async () => {
+    const article = {
+      title: "Lorem Ipsum",
+      summary: "Story of Lorem",
+      article_body:
+        "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+    };
     const response = await supertest(httpServer)
-    .post('/api/user/login')
-    .send({ email: 'tee@tee.com', password: 'Password' })
-    .expect(200)
-    token = response.body.token
-  });
+      .post("/api/v1/article")
+      .set({
+        Authorization: "bearer " + token,
+        "Content-Type": "application/json",
+      })
+      .send(article);
+
+    expect(response.headers["content-type"]).toBe(
+      "application/json; charset=utf-8"
+    );
+    expect(response.status).toBe(201);
+    expect(response.body.type).toBe('success');
+    expect(response.body.article.title).toBe(article.title);
   
-
-  /* Closing database connection after each test. */
-  afterAll(async () => {
-    await mongoose.connection.close();
+    //set the value of ID
+    id = response.body.article.id;
   });
-  
 
-describe("Blog Route", () => {
-    it('GET /blog', async () => {
-        const response = await supertest(httpServer).get("/api/blog")
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(200)
-        expect(response.body.data.length).toBe(3)
-    })
 
-    it('CREATE /blog', async () => {
-        const blog = {
-            "title": "Tent122",
-            "description": "Story of Ten",
-            "tags": ["Null"],
-            "body" : "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
-        }
-        const response = await supertest(httpServer)
-        .post("/api/blog")
-        .set({ Authorization: 'bearer ' + token, 'Content-Type': 'application/json' })
-        .send(blog)  
+  it("GET /article/:id", async () => {
+    const response = await supertest(httpServer)
+      .get(`/api/v1/article/${id}`)
+      .set({
+        Authorization: "bearer " + token,
+        "Content-Type": "application/json",
+      });
 
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(201)
-        expect(response.body.data.title).toBe(blog.title)
-        id = response.body.data._id
-        
-    })
+    expect(response.headers["content-type"]).toBe(
+      "application/json; charset=utf-8"
+    );
+    expect(response.status).toBe(200)
+    expect(response.body.type).toBe('success');
+  });
 
-    it('PUBLISH /blog/:id', async () => {
-        const response = await supertest(httpServer)
-        .patch(`/api/blog/${id}`)
-        .set({ Authorization: 'bearer ' + token, 'Content-Type': 'application/json' })
+  it("EDIT /article/:id", async () => {
+    const articleUpdate = {
+      title: "New Lorem Title",
+    };
+    const response = await supertest(httpServer)
+      .put(`/api/v1/article/${id}`)
+      .set({
+        Authorization: "bearer " + token,
+        "Content-Type": "application/json",
+      })
+      .send(articleUpdate);
 
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(200)
-        expect(response.body.data.state).toBe('published')
-    })
+    expect(response.headers["content-type"]).toBe(
+      "application/json; charset=utf-8"
+    );
 
-    it('GET /blog/:id', async () => {
-        const response = await supertest(httpServer)
-        .get(`/api/blog/${id}`)
-        .set({ Authorization: 'bearer ' + token, 'Content-Type': 'application/json' })
+    expect(response.status).toBe(200);
+    expect(response.body.type).toBe('success');
+    expect(response.body.article.title).toBe(articleUpdate.title);
+  });
 
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(200)
-    })
-
-    it('EDIT /blog/:id', async () => {
-        const blogUpdate = {
-            "title": "Tent112"
-        }
-        const response = await supertest(httpServer)
-        .put(`/api/blog/${id}`)
-        .set({ Authorization: 'bearer ' + token, 'Content-Type': 'application/json' })
-        .send(blogUpdate)
-
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(200)
-        expect(response.body.data.title).toBe(blogUpdate.title)
-    })
-
-    it('DELETE /blog/:id', async () => {
-        const response = await supertest(httpServer)
-        .delete(`/api/blog/${id}`)
-        .set({ Authorization: 'bearer ' + token, 'Content-Type': 'application/json' })
-
-        expect(response.headers['content-type']).toBe('application/json; charset=utf-8')
-        expect(response.status).toBe(200)
-    })
-})
+  it("DELETE /article/:id", async () => {
+    const response = await supertest(httpServer)
+      .delete(`/api/v1/article/${id}`)
+      .set({
+        Authorization: "bearer " + token,
+        "Content-Type": "application/json",
+      });
+    expect(response.status).toBe(204);
+  });
+});

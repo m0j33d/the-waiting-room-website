@@ -15,6 +15,20 @@ function validateArticle() {
     ]
 }
 
+function validateEditArticle() {
+    return [
+        body('title')
+            .optional()
+            .isString(),
+        body('summary')
+            .optional()
+            .isString(),
+        body('article_body') 
+            .optional()
+            .isString()
+    ]
+}
+
 
 
 
@@ -33,5 +47,6 @@ function validate(req, res, next) {
 
 module.exports = {
     validateArticle,
+    validateEditArticle,
     validate
 }

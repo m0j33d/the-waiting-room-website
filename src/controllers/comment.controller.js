@@ -6,12 +6,12 @@ const createComment = async (req, res) => {
   const data = req.body;
   data.user_id = req.user.id;
   try {
-    const coment = await CommentModel.create(data);
+    const comment = await CommentModel.create(data);
 
     return res.status(201).json({
       type: "success",
       message: "Comment created successfully!",
-      coment: coment,
+      comment: comment,
     });
   } catch (error) {
     return res.status(400).json({
@@ -48,14 +48,14 @@ const getCommentById = async (req, res) => {
 const editCommentById = async (req, res) => {
   const update = req.body;
   try {
-    const coment = await getComment(req.params.id);
+    const comment = await getComment(req.params.id);
 
-    if (coment) {
-      coment.update(update);
+    if (comment) {
+      comment.update(update);
       return res.status(200).json({
         type: "success",
         message: "Comment updated successfully",
-        coment: coment,
+        comment: comment,
       });
     }
   } catch (error) {

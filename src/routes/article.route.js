@@ -10,7 +10,7 @@ const {
   editArticleById,
   deleteArticleById,
 } = require("../controllers/article.controller")
-const { validateArticle, validate } = require("../middleware/article.validation")
+const { validateArticle, validateEditArticle, validate } = require("../middleware/article.validation")
 
 
 router
@@ -21,7 +21,7 @@ router
 router 
   .route('/:id')
   .get(getArticleById)
-  .put(authenticate.verifyUser, authorize.isArticleCreator, editArticleById)
+  .put(authenticate.verifyUser, authorize.isArticleCreator, validateEditArticle(), validate, editArticleById)
   .delete(authenticate.verifyUser, authorize.isArticleCreator, deleteArticleById)
   
 

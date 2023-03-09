@@ -1,4 +1,5 @@
 const ArticleModel = require("../model").articles;
+const { where } = require("sequelize");
 const { getAllCommentsForArticle } = require("../services/comment.service")
 
 
@@ -77,7 +78,7 @@ const editArticleById = async (req, res) => {
   const id = req.params.id;
   const update = req.body;
   try {
-    const article = await ArticleModel.update(id);
+    const article = await ArticleModel.findOne({where: {id : id}});
 
     if (article) {
       article.update(update);
