@@ -12,7 +12,7 @@ describe("User Route", () => {
             "first_name": "Mojeed",
             "last_name": "Adeoye",
             "password": "Password",
-            "email" : "mojeed12345678@gmail.com"
+            "email" : "mojeed1234568@gmail.com"
           }
 
         const response = await supertest(httpServer).post("/api/v1/user/signup").send(body)

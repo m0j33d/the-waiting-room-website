@@ -1,5 +1,5 @@
 import supertest from "supertest"
-import {server as httpServer} from "../bin/www.js"
+import httpServer from "../bin/www.js"
 
 let token;
 let id;

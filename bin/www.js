@@ -91,4 +91,4 @@ function onListening() {
 
 }
 
-export { server }
+export default server
