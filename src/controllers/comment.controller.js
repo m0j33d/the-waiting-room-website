@@ -1,5 +1,8 @@
-const CommentModel = require("../model").comments;
-const { getComment } = require("../services/comment.service")
+import {db} from "../model/index.js"
+
+import { getComment } from "../services/comment.service.js"
+
+const CommentModel = db.comments;
 
 
 const createComment = async (req, res) => {
@@ -24,6 +27,11 @@ const createComment = async (req, res) => {
 const getCommentById = async (req, res) => {
   try {
     const comment = await getComment(req.params.id);
+
+    if(comment.type == "error"){
+      return res.status(404).json(comment);
+    }
+
     if(!comment) {
       return res.status(404).json({
         type: "error",
@@ -89,7 +97,7 @@ const deleteCommentById = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createComment,
   getCommentById,
   editCommentById,

@@ -1,16 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const authenticate = require('../middleware/authenticate')
-const authorize = require('../middleware/authorize')
+import express from 'express';
+import * as authenticate from '../middleware/authenticate.js'
+import * as authorize from '../middleware/authorize.js'
 
-const {
+const router = express.Router();
+
+
+import {
   createArticle,
   getAllArticles,
   getArticleById,
   editArticleById,
   deleteArticleById,
-} = require("../controllers/article.controller")
-const { validateArticle, validateEditArticle, validate } = require("../middleware/article.validation")
+} from "../controllers/article.controller.js"
+
+import { validateArticle, validateEditArticle, validate } from "../middleware/article.validation.js"
 
 
 router
@@ -25,4 +28,4 @@ router
   .delete(authenticate.verifyUser, authorize.isArticleCreator, deleteArticleById)
   
 
-module.exports = router;
+export { router };

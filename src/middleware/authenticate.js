@@ -1,14 +1,14 @@
-var passport = require("passport");
+import passport from 'passport';
+import {db} from "../model/index.js"
+import { Strategy, ExtractJwt } from 'passport-jwt'
+import jwt from 'jsonwebtoken'
 
-const UserModel = require("../model").users;
+import * as config from '../../config/config.js'
 
-var JwtStrategy = require("passport-jwt").Strategy;
-var ExtractJwt = require("passport-jwt").ExtractJwt;
-var jwt = require("jsonwebtoken");
+const UserModel = db.users;
 
-var config = require("../../config/config");
 
-exports.getToken = function (user) {
+const getToken =  (user) => {
   return jwt.sign(user, config.jwtSecret, { expiresIn: 3600 });
 };
 
@@ -16,9 +16,9 @@ var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = config.jwtSecret;
 
-exports.jwtPassport = passport.use(
-  new JwtStrategy(opts, async (jwt_payload, next) => {
-    user = await UserModel.findOne({ where: { id: jwt_payload.id } });
+const jwtPassport = passport.use(
+  new Strategy(opts, async (jwt_payload, next) => {
+    const user = await UserModel.findOne({ where: { id: jwt_payload.id } });
 
     if (user) {
       next(null, user);
@@ -28,5 +28,10 @@ exports.jwtPassport = passport.use(
   })
 );
 
-exports.verifyUser = passport.authenticate("jwt", { session: false });
+const verifyUser = passport.authenticate("jwt", { session: false });
 
+export {
+  getToken,
+  jwtPassport,
+  verifyUser
+}

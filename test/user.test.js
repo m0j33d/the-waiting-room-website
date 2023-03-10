@@ -1,5 +1,5 @@
-const supertest = require("supertest")
-const httpServer = require("../bin/www")
+import supertest from "supertest"
+import httpServer from "../bin/www.js"
 
 
 afterAll(() => {
@@ -12,7 +12,7 @@ describe("User Route", () => {
             "first_name": "Mojeed",
             "last_name": "Adeoye",
             "password": "Password",
-            "email" : "example@example0.com"
+            "email" : "mojeed12345678@gmail.com"
           }
 
         const response = await supertest(httpServer).post("/api/v1/user/signup").send(body)

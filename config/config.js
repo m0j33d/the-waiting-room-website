@@ -1,6 +1,11 @@
-require('dotenv').config();
+import dotenv  from "dotenv"
 
-module.exports = {
-    'port': process.env.PORT,
-    'jwtSecret': process.env.JWTSECRET
+dotenv.config() 
+
+const port = process.env.PORT
+const jwtSecret = process.env.JWTSECRET
+
+export {
+    port,
+    jwtSecret 
 }

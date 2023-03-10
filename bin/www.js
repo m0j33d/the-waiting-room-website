@@ -4,9 +4,10 @@
  * Module dependencies.
  */
 
-const app = require('../app');
-const http = require('http');
-const config = require('../config/config')
+import {app} from "../app.js"
+import * as http from "http"
+import * as config from "../config/config.js"
+
 
 /**
  * Get port from environment and store in Express.
@@ -90,4 +91,4 @@ function onListening() {
 
 }
 
-module.exports = server
+export { server }

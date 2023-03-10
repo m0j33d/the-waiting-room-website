@@ -1,6 +1,9 @@
-const ArticleModel = require("../model").articles;
-const { where } = require("sequelize");
-const { getAllCommentsForArticle } = require("../services/comment.service")
+import {db} from "../model/index.js"
+
+
+const ArticleModel = db.articles;
+
+import {getAllCommentsForArticle} from "../services/comment.service.js"
 
 
 const createArticle = async (req, res) => {
@@ -119,7 +122,7 @@ const deleteArticleById = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createArticle,
   getAllArticles,
   getArticleById,

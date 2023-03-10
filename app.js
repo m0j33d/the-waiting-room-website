@@ -1,8 +1,8 @@
-const express = require('express');
-const passport = require('passport')
-const bodyParser = require('body-parser')
+import express from 'express';
+import passport from 'passport';
+import bodyParser from 'body-parser'
 
-const indexRoute = require('./src/routes/index')
+import {router as indexRoute} from './src/routes/index.js'
 
 const app = express();
 
@@ -30,4 +30,4 @@ app.use(function (err, req, res, next) {
   })
 });
 
-module.exports = app;
+export { app };

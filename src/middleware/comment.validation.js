@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator')
+import { body, validationResult } from 'express-validator'
 
 
 function validateComment() {
@@ -28,7 +28,7 @@ function validate(req, res, next) {
     })
 }
 
-module.exports = {
+export {
     validateComment,
     validate
 }

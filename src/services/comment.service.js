@@ -1,4 +1,6 @@
-const CommentModel = require("../model").comments;
+import {db} from "../model/index.js"
+
+const CommentModel = db.comments;
 
 
 const getAllCommentsForArticle = async (article_id, pageSize = 15 , page = 0 ) => {
@@ -23,24 +25,24 @@ const getComment = async (comment_id) => {
   try {
     const comment = await CommentModel.findOne({ where: { id: comment_id } });
     if (!comment) {
-      return res.status(404).json({
+      return {
         type: "error",
         message: "Comment not found!",
-      });
+      }
     }
     return comment
 
   } catch (error) {
-    return res.status(400).json({
+    return {
       type: "error",
       message: error.message,
-    });
+    };
   }
 };
 
 
 
-module.exports = {
+export {
   getAllCommentsForArticle,
   getComment,
 };

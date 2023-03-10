@@ -1,6 +1,8 @@
-const UserModel = require("../model").users;
-const { hashPassword, validateUser } = require("../../config/helper");
-const authenticate = require("../middleware/authenticate");
+import { db } from "../model/index.js"
+import { hashPassword, validateUser } from "../../config/helper.js";
+import  * as authenticate from "../middleware/authenticate.js";
+
+const UserModel = db.users;
 
 const createUser = async (req, res) => {
   try {
@@ -53,7 +55,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createUser,
   loginUser,
 };

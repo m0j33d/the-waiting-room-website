@@ -1,8 +1,8 @@
-const express = require('express');
+import express from "express"
 const router = express.Router();
 
-const { createUser, loginUser } = require("../controllers/user.controller.js")
-const { validateSignUp, validateLogin, validate } = require("../middleware/auth.validation")
+import  { createUser, loginUser } from "../controllers/user.controller.js"
+import { validateSignUp, validateLogin, validate } from "../middleware/auth.validation.js"
 
 router
   .route('/signup')
@@ -13,4 +13,4 @@ router
   .post(validateLogin(), validate, loginUser)
 
 
-module.exports = router;
+export { router };

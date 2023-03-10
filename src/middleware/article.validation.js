@@ -1,7 +1,7 @@
-const { body, validationResult } = require('express-validator')
+import { body, validationResult } from 'express-validator'
 
 
-function validateArticle() {
+const validateArticle = () => {
     return [
         body('title')
             .notEmpty()
@@ -15,7 +15,7 @@ function validateArticle() {
     ]
 }
 
-function validateEditArticle() {
+const validateEditArticle = () => {
     return [
         body('title')
             .optional()
@@ -32,7 +32,7 @@ function validateEditArticle() {
 
 
 
-function validate(req, res, next) {
+const validate = (req, res, next) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         return next()
@@ -45,7 +45,7 @@ function validate(req, res, next) {
     })
 }
 
-module.exports = {
+export {
     validateArticle,
     validateEditArticle,
     validate

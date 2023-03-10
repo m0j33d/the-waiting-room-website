@@ -1,8 +1,10 @@
-const CommentModel = require("../model").comments;
-const UserModel = require("../model").users;
-const ArticleModel = require("../model").articles;
+import {db} from "../model/index.js"
 
-exports.isArticleCreator = async (req, res, next) => {
+const CommentModel = db.comments;
+const UserModel = db.users;
+const ArticleModel = db.articles;
+
+const isArticleCreator = async (req, res, next) => {
   try {
     const article = await ArticleModel.findByPk(req.params.id);
 
@@ -29,7 +31,7 @@ exports.isArticleCreator = async (req, res, next) => {
   }
 };
 
-exports.isCommentCreator = async (req, res, next) => {
+const isCommentCreator = async (req, res, next) => {
   try {
     const comment = await CommentModel.findByPk(req.params.id);
 
@@ -55,3 +57,9 @@ exports.isCommentCreator = async (req, res, next) => {
     });
   }
 };
+
+
+export {
+  isArticleCreator,
+  isCommentCreator
+}

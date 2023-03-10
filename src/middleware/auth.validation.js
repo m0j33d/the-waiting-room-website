@@ -1,8 +1,10 @@
-const { body, validationResult } = require('express-validator')
-const UserModel = require('../model').users
+import { body, validationResult } from 'express-validator'
+import {db} from "../model/index.js"
+
+const UserModel = db.users
 
 
-function validateSignUp() {
+const validateSignUp = () => {
     return [
         body('first_name')
             .notEmpty()
@@ -33,7 +35,7 @@ function validateSignUp() {
     ]
 }
 
-function validateLogin() {
+const validateLogin = () => {
     return [
         body('email') 
             .isEmail()
@@ -46,7 +48,7 @@ function validateLogin() {
     ]
 }
 
-function validate(req, res, next) {
+const validate = (req, res, next) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         return next()
@@ -59,7 +61,7 @@ function validate(req, res, next) {
     })
 }
 
-module.exports = {
+export {
     validateSignUp,
     validateLogin,
     validate

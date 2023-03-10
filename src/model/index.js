@@ -1,5 +1,8 @@
-const { Sequelize, DataTypes} = require("sequelize")
-const config = require('../../config/dbConfig')
+import { Sequelize, DataTypes } from "sequelize"
+import * as config from '../../config/dbConfig.js'
+import User from '../model/users.model.js'
+import Article from '../model/articles.model.js'
+import Comment from '../model/comments.model.js'
 
 const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PASSWORD, {
     host: config.DB_HOST,
@@ -17,9 +20,10 @@ const db = {}
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
-db.users = require('./users.model')(sequelize, DataTypes)
-db.articles = require('./articles.model')(sequelize, DataTypes)
-db.comments = require('./comments.model')(sequelize, DataTypes)
+
+db.users = User(sequelize, DataTypes)
+db.articles = Article(sequelize, DataTypes)
+db.comments = Comment(sequelize, DataTypes)
 
 db.sequelize.sync({ force: false })
     .then(() => console.log('Table sync successfully.'))
@@ -28,4 +32,4 @@ db.sequelize.sync({ force: false })
     })
 
 
-module.exports = db
+export { db }

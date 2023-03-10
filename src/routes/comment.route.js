@@ -1,14 +1,16 @@
-const express = require('express');
+import express from 'express';
+import * as authenticate from '../middleware/authenticate.js'
+import * as authorize from '../middleware/authorize.js'
+
+
 const router = express.Router();
-const authenticate = require('../middleware/authenticate')
-const authorize = require('../middleware/authorize')
-const {
+import {
   createComment,
   getCommentById,
   editCommentById,
   deleteCommentById,
-} = require("../controllers/comment.controller")
-const { validateComment, validate } = require("../middleware/comment.validation")
+} from "../controllers/comment.controller.js"
+import { validateComment, validate } from "../middleware/comment.validation.js"
 
 
 router
@@ -22,4 +24,4 @@ router
   .delete(authenticate.verifyUser, authorize.isCommentCreator, deleteCommentById)
   
 
-module.exports = router;
+export{ router };

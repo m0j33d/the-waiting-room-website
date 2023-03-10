@@ -1,17 +1,20 @@
-const argon2 = require("argon2")
-const userModel = require("../src/model").users
+import argon2 from "argon2"
+import {db} from "../src/model/index.js"
 
-async function hashPassword(password) {
+const UserModel = db.users;
+
+const hashPassword = async (password) => {
     return await argon2.hash(password);
 }
 
-async function verifyPassword(plainPassword, hashedPassword) {
+const verifyPassword = async (plainPassword, hashedPassword) => {
     return await argon2.verify(hashPassword, plainPassword)
 }
 
 
-async function validateUser(email, password) {
-    user = await userModel.findOne({ where :{ email: email }})
+const validateUser = async (email, password) => {
+    const user = await UserModel.findOne({ where :{ email: email }})
+
     if (!user) {
         return false
     }
@@ -23,7 +26,7 @@ async function validateUser(email, password) {
     return user;
 }
 
-module.exports = {
+export {
     hashPassword,
     verifyPassword,
     validateUser
